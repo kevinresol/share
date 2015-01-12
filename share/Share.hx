@@ -38,6 +38,9 @@ class Share {
 		urlUpdated = new Signal1();
 		share_init(urlUpdated);
 		return true;
+		#elseif ios
+		urlUpdated = new Signal1();
+		share_init(urlUpdated.dispatch);
 		#end
 		
 		return false;
@@ -50,6 +53,7 @@ class Share {
 		private static var share_get_url = JNI.createStaticMethod ("org.haxe.extension.Share", "getURL", "()Ljava/lang/String;");
 		#else
 		private static var share_share_text = Lib.load ("share", "share_share_text", 1);
+		private static var share_init = Lib.load ("share", "share_init", 1);
 		private static var share_get_url = Lib.load ("share", "share_get_url", 0);
 		#end
 	#end

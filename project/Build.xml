@@ -7,8 +7,17 @@
 		<compilerflag value="-Iinclude"/>
 		
 		<file name="common/ExternalInterface.cpp"/>
-		<file name="common/Share.cpp"/>
 		
+		
+	</files>
+
+
+	<files id="iphone">
+		<compilerflag value="-Iinclude"/>
+		<compilerflag value="-Iiphone/ShareKit/Classes/ShareKit/Core"/>
+		<compilerflag value="-Iiphone/ShareKit/Classes/ShareKit/UI"/>
+		<compilerflag value="-Iiphone/ShareKit/Classes/ShareKit/Sharers"/> 
+		<file name="iphone/Share.mm"/>
 	</files>
 	
 	<set name="SLIBEXT" value=".lib" if="windows"/>
@@ -22,6 +31,7 @@
 		<outdir name="../ndll/${BINDIR}"/>
 		<ext value=".ndll" if="windows || mac || linux"/>
 		<files id="common"/>
+		<files id="iphone" if="iphone"/>
 		
 	</target>
 	
