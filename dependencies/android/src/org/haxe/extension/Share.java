@@ -5,9 +5,12 @@ import android.app.Activity;
 import android.content.res.AssetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+
+import org.haxe.lime.HaxeObject;
 
 
 /* 
@@ -38,6 +41,12 @@ import android.view.View;
 */
 public class Share extends Extension {
 	
+	protected static HaxeObject urlUpdated;
+	
+	public static void init(HaxeObject urlUpdated) {
+		Share.urlUpdated = urlUpdated;
+	}
+	
 	public static void shareText (String message) {
 		Intent sendIntent = new Intent();
 		sendIntent.setAction(Intent.ACTION_SEND);
@@ -45,6 +54,14 @@ public class Share extends Extension {
 		sendIntent.setType("text/plain");
 		Extension.mainActivity.startActivity(sendIntent);
 		//startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.send_to)));
+	}
+	
+	public static String getURL() {
+		Intent intent = Extension.mainActivity.getIntent();
+		if(intent.getAction() == Intent.ACTION_VIEW)
+			return intent.getData().toString();
+		else
+			return "";
 	}
 	
 	/**
@@ -55,6 +72,29 @@ public class Share extends Extension {
 	public boolean onActivityResult (int requestCode, int resultCode, Intent data) {
 		
 		return true;
+		
+	}
+	
+	/**
+	 * Called when the a new Intent is received
+	 */
+	public void onNewIntent (Intent intent) {
+		
+		Intent currentIntent = Extension.mainActivity.getIntent();
+		
+		Uri currentData = currentIntent.getData();
+		Uri newData = intent.getData();
+		
+		String currentDataString = currentData == null ? "" : currentData.toString();
+		String newDataString = newData == null ? "" : newData.toString();
+		
+		if(currentDataString != newDataString)
+		{
+			Extension.mainActivity.setIntent(intent);
+			
+			if(urlUpdated != null)
+				urlUpdated.call1("dispatch", newDataString);
+		}
 		
 	}
 	
